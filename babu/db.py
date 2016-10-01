@@ -22,7 +22,10 @@ class Field(object):
         return self.value
 
     def to_db(self):
-        return self.serialize().ljust(self.max_length, self.fill_char)
+        s = self.serialize()
+        if s is None:
+            s = ''
+        return s.ljust(self.max_length, self.fill_char)
 
     @classmethod
     def field_factory(cls, max_length):
@@ -65,9 +68,8 @@ class Model(object):
 
     def __init__(self, **kwargs):
         d = {}
-        for field_name, value in kwargs.items():
-            field_class = self.fields[field_name]
-            d[field_name] = field_class(value)
+        for field_name, field_class in self.fields.items():
+            d[field_name] = field_class(kwargs.get(field_name))
         self.data = d
 
     def __repr__(self):
@@ -86,7 +88,8 @@ class Model(object):
 
     def to_db(self):
         s = ''
-        for _field_name, field in self.data.items():
+        for field_name in self.fields.keys():
+            field = self.data[field_name]
             s += field.to_db()
         return s
 
