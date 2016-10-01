@@ -1,4 +1,4 @@
-from babu.connections import FileConnection
+from babu.storage import FixedLengthRecordStorage
 from babu.utils import classproperty
 
 MAX_INT = 2 ** 9
@@ -44,8 +44,7 @@ class CharField(Field):
 
 class Manager(object):
     connections = {}
-    connection_class = FileConnection
-    connection = None
+    storage_class = FixedLengthRecordStorage
 
     def __init__(self, model):
         self.model = model
@@ -54,7 +53,7 @@ class Manager(object):
         db_name = self.model.name
         connections = Manager.connections
         if db_name not in connections:
-            connections[db_name] = self.connection_class(self.model)
+            connections[db_name] = self.storage_class(self.model)
         return connections[db_name]
 
     @property

@@ -9,7 +9,7 @@ class IntegrityError(Exception):
     pass
 
 
-class BaseConnection(object):
+class BaseStorage(object):
     def __init__(self, model):
         self.model = model
 
@@ -32,11 +32,11 @@ class BaseConnection(object):
         raise NotImplementedError
 
 
-class FileConnection(BaseConnection):
+class FixedLengthRecordStorage(BaseStorage):
     FILL_CHAR = '\000'
 
     def __init__(self, model):
-        super(FileConnection, self).__init__(model)
+        super(FixedLengthRecordStorage, self).__init__(model)
         self.db_name = model.name
         self.row_width = self.calc_row_width(model)
         db_name = self.db_name + '.db'
