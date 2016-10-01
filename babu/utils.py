@@ -1,7 +1,3 @@
-def chunker(seq, size):
-    return ((pos, seq[pos:pos + size]) for pos in xrange(0, len(seq), size))
-
-
 class classproperty(object):
     def __init__(self, fget):
         self.fget = fget
